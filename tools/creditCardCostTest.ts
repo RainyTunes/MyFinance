@@ -5,13 +5,10 @@ import type { CreditCard } from '../shared/types';
 // 模拟计算器逻辑（简化版）
 function calculateMonthlyCost(card: CreditCard) {
   const cashAdvanceRate = 0.006; // 0.6%
-  const dailyInterestRate = 0.0005; // 万分之5
-  const avgHoldingDays = 15;
 
   const monthlyCashAdvanceFee = Math.round(card.creditLimit * cashAdvanceRate);
-  const monthlyInterest = Math.round(card.creditLimit * dailyInterestRate * avgHoldingDays);
   const monthlyAnnualFee = Math.round(card.annualFee / 12);
-  const totalMonthlyCost = monthlyCashAdvanceFee + monthlyInterest + monthlyAnnualFee;
+  const totalMonthlyCost = monthlyCashAdvanceFee + monthlyAnnualFee;
 
   return {
     cardNumber: card.cardNumber,
@@ -19,7 +16,6 @@ function calculateMonthlyCost(card: CreditCard) {
     creditLimit: card.creditLimit / 100, // 转为元
     annualFee: card.annualFee / 100,
     monthlyCashAdvanceFee: monthlyCashAdvanceFee / 100,
-    monthlyInterest: monthlyInterest / 100,
     monthlyAnnualFee: monthlyAnnualFee / 100,
     totalMonthlyCost: totalMonthlyCost / 100
   };
@@ -38,7 +34,6 @@ creditCards.forEach(card => {
   console.log(`  额度: ¥${cost.creditLimit.toLocaleString()}`);
   console.log(`  年费: ¥${cost.annualFee.toLocaleString()}`);
   console.log(`  月套现费: ¥${cost.monthlyCashAdvanceFee.toFixed(2)}`);
-  console.log(`  月利息: ¥${cost.monthlyInterest.toFixed(2)}`);
   console.log(`  月年费分摊: ¥${cost.monthlyAnnualFee.toFixed(2)}`);
   console.log(`  月总成本: ¥${cost.totalMonthlyCost.toFixed(2)}`);
   console.log('');

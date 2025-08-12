@@ -111,7 +111,6 @@ export interface CreditCard {
   
   // 套现相关计算字段
   cashAdvanceRate?: number;      // 套现手续费率（默认0.6%）
-  interestRate?: number;         // 日利率（默认万分之5）
   monthlyCost?: number;          // 每月成本（计算得出）
   notes?: string;                // 备注信息
   lastUpdated: string;           // 最后更新时间
@@ -123,11 +122,9 @@ export interface CreditCardCostCalculation {
   creditLimit: number;           // 额度
   annualFee: number;             // 年费
   cashAdvanceRate: number;       // 套现手续费率
-  interestRate: number;          // 日利率
   
   // 计算结果
   monthlyCashAdvanceFee: number; // 每月套现手续费
-  monthlyInterest: number;       // 每月利息（大概估算）
   monthlyAnnualFee: number;      // 年费分摊/月
   totalMonthlyCost: number;      // 每月总成本
 }

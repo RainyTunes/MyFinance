@@ -6,7 +6,6 @@ import type { CreditCard, CreditCardCostCalculation } from '../types';
 export class CreditCardCalculator {
   // 默认费率
   static readonly DEFAULT_CASH_ADVANCE_RATE = 0.006; // 0.6%
-  static readonly DEFAULT_DAILY_INTEREST_RATE = 0.0005; // 万分之5
   
   /**
    * 计算信用卡月度套现成本
@@ -15,30 +14,22 @@ export class CreditCardCalculator {
    */
   static calculateMonthlyCost(card: CreditCard): CreditCardCostCalculation {
     const cashAdvanceRate = card.cashAdvanceRate || this.DEFAULT_CASH_ADVANCE_RATE;
-    const dailyInterestRate = card.interestRate || this.DEFAULT_DAILY_INTEREST_RATE;
     
     // 1. 每月套现手续费 = 额度 × 套现手续费率
     const monthlyCashAdvanceFee = Math.round(card.creditLimit * cashAdvanceRate);
     
-    // 2. 每月利息估算
-    // 假设套现后平均持有15天（月中套现，月底还款）
-    const avgHoldingDays = 15;
-    const monthlyInterest = Math.round(card.creditLimit * dailyInterestRate * avgHoldingDays);
-    
-    // 3. 年费分摊
+    // 2. 年费分摊
     const monthlyAnnualFee = Math.round(card.annualFee / 12);
     
-    // 4. 每月总成本
-    const totalMonthlyCost = monthlyCashAdvanceFee + monthlyInterest + monthlyAnnualFee;
+    // 3. 每月总成本 = 套现手续费 + 年费分摊
+    const totalMonthlyCost = monthlyCashAdvanceFee + monthlyAnnualFee;
     
     return {
       creditCardId: card.id,
       creditLimit: card.creditLimit,
       annualFee: card.annualFee,
       cashAdvanceRate,
-      interestRate: dailyInterestRate,
       monthlyCashAdvanceFee,
-      monthlyInterest,
       monthlyAnnualFee,
       totalMonthlyCost
     };
@@ -90,8 +81,8 @@ export class CreditCardCalculator {
    * @returns 年化成本率（百分比）
    */
   static calculateAnnualCostRate(card: CreditCard): number {
-    const monthlyCost = this.calculateMonthlyCost(card).totalMonthlyCost;
-    const annualCost = monthlyCost * 12;
+    const calculation = this.calculateMonthlyCost(card);
+    const annualCost = calculation.totalMonthlyCost * 12;
     return (annualCost / card.creditLimit) * 100;
   }
 }
