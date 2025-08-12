@@ -68,6 +68,8 @@ export interface FinanceData {
   budgets: Budget[];
   assets: Asset[];
   financialGoals: FinancialGoal[];
+  creditCards: CreditCard[];
+  creditCardStatements: CreditCardStatement[];
   lastUpdated: string;
 }
 
@@ -96,4 +98,50 @@ export interface YearlyStats {
   totalIncome: number;
   totalExpense: number;
   netCashFlow: number;
+}
+
+// 信用卡数据模型
+export interface CreditCard {
+  id: string;                    // 唯一标识
+  cardNumber: string;            // 编号（卡号后4位或自定义编号）
+  bankName: string;              // 银行名称
+  creditLimit: number;           // 额度（分为单位）
+  cardType: string;              // 卡种（如：金卡、白金卡、普卡等）
+  availableCredit?: number;      // 可用额度（分）
+  currentBalance?: number;       // 当前欠款（分）
+  issueDate?: string;            // 发卡日期
+  expiryDate?: string;           // 到期日期
+  annualFee?: number;            // 年费（分）
+  interestRate?: number;         // 利率（百分比）
+  statementDate?: number;        // 账单日（每月几号）
+  paymentDueDate?: number;       // 还款日（每月几号）
+  isActive: boolean;             // 是否激活
+  lastUpdated: string;           // 最后更新时间
+}
+
+// 信用卡账单
+export interface CreditCardStatement {
+  id: string;
+  creditCardId: string;          // 关联的信用卡ID
+  statementDate: string;         // 账单日期
+  dueDate: string;              // 还款截止日期
+  previousBalance: number;       // 上期余额（分）
+  currentBalance: number;        // 本期余额（分）
+  minimumPayment: number;        // 最低还款额（分）
+  transactions: CreditCardTransaction[];  // 交易记录
+  isPaid: boolean;              // 是否已还款
+  paymentAmount?: number;       // 实际还款金额（分）
+  paymentDate?: string;         // 还款日期
+}
+
+// 信用卡交易记录
+export interface CreditCardTransaction {
+  id: string;
+  creditCardId: string;
+  date: string;                 // 交易日期
+  description: string;          // 交易描述
+  amount: number;               // 金额（分，正数为消费，负数为还款）
+  category?: string;            // 消费类别
+  merchant?: string;            // 商户名称
+  isRefund?: boolean;          // 是否退款
 }
