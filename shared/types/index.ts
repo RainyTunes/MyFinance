@@ -1,15 +1,42 @@
 // 共享类型定义
 
+// 支持的币种
+export type Currency = 'CNY' | 'HKD';
+
+// 多币种金额
+export interface MultiCurrencyAmount {
+  amount: number;           // 原始金额（分为单位）
+  currency: Currency;       // 币种
+  amountInCNY?: number;     // 人民币金额（分为单位，用于计算）
+  exchangeRate?: number;    // 使用的汇率（相对于人民币）
+}
+
 export interface CashFlowRecord {
   id: string;
   date: string; // ISO 8601 格式
   type: 'income' | 'expense' | 'loan_payment' | 'investment';
-  amount: number; // 以分为单位
+  amount: number; // 以分为单位（人民币）
+  originalAmount?: MultiCurrencyAmount; // 原始币种金额
   category: string;
   description: string;
   tags?: string[];
   isRecurring?: boolean;
   recurringPattern?: 'monthly' | 'yearly' | 'weekly';
+}
+
+// 收入来源定义
+export interface IncomeSource {
+  id: string;
+  name: string;             // 收入来源名称
+  amount: number;           // 原始金额（分为单位）
+  currency: Currency;       // 币种
+  amountInCNY: number;      // 人民币金额（分为单位）
+  exchangeRate: number;     // 汇率（相对于人民币）
+  category: 'salary' | 'freelance' | 'rental' | 'investment' | 'other';
+  description: string;
+  isActive: boolean;        // 是否活跃
+  isRecurring: boolean;     // 是否定期收入
+  lastUpdated: string;
 }
 
 export interface Loan {
@@ -69,6 +96,7 @@ export interface FinanceData {
   assets: Asset[];
   financialGoals: FinancialGoal[];
   creditCards: CreditCard[];
+  incomeSources: IncomeSource[];
   lastUpdated: string;
 }
 
