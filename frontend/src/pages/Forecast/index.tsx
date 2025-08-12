@@ -158,6 +158,52 @@ const ForecastPage: React.FC = () => {
             </Row>
           </Card>
         </Col>
+
+        <Col xs={24} lg={12}>
+          <Card title="贷款债务分析" bodyStyle={{ padding: '20px' }}>
+            <Row gutter={[16, 8]}>
+              <Col span={12}>
+                <Text strong>活跃贷款数量</Text>
+              </Col>
+              <Col span={12} style={{ textAlign: 'right' }}>
+                <Text>{financialSummary.loanAnalysis.activeLoanCount}个</Text>
+              </Col>
+            </Row>
+            <Divider style={{ margin: '8px 0' }} />
+            <Row gutter={[16, 8]}>
+              <Col span={12}>
+                <Text strong>剩余债务总额</Text>
+              </Col>
+              <Col span={12} style={{ textAlign: 'right' }}>
+                <Text style={{ color: '#ff4d4f' }}>
+                  {formatCurrency(financialSummary.loanAnalysis.totalRemainingDebt)}
+                </Text>
+              </Col>
+            </Row>
+            <Divider style={{ margin: '8px 0' }} />
+            <Row gutter={[16, 8]}>
+              <Col span={12}>
+                <Text strong>债务收入比</Text>
+              </Col>
+              <Col span={12} style={{ textAlign: 'right' }}>
+                <Text style={{ color: financialSummary.loanAnalysis.debtToIncomeRatio > 50 ? '#ff4d4f' : '#faad14' }}>
+                  {financialSummary.loanAnalysis.debtToIncomeRatio.toFixed(1)}%
+                </Text>
+              </Col>
+            </Row>
+            <Divider style={{ margin: '8px 0' }} />
+            <Row gutter={[16, 8]}>
+              <Col span={12}>
+                <Text strong>还款进度</Text>
+              </Col>
+              <Col span={12} style={{ textAlign: 'right' }}>
+                <Text style={{ color: '#52c41a' }}>
+                  {financialSummary.loanAnalysis.repaymentProgress.toFixed(1)}%
+                </Text>
+              </Col>
+            </Row>
+          </Card>
+        </Col>
         
         <Col xs={24} lg={12}>
           <Card title="年化数据预测" bodyStyle={{ padding: '20px' }}>
@@ -193,6 +239,57 @@ const ForecastPage: React.FC = () => {
                 </Text>
               </Col>
             </Row>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* 贷款明细分析 */}
+      <Row gutter={[16, 16]} style={{ marginTop: '24px' }}>
+        <Col span={24}>
+          <Card title="主要贷款明细" bodyStyle={{ padding: '20px' }}>
+            <Row gutter={[16, 16]}>
+              {financialSummary.loanAnalysis.topLoansByPayment.slice(0, 4).map((loan, index) => (
+                <Col xs={24} sm={12} lg={6} key={loan.id}>
+                  <Card 
+                    size="small" 
+                    style={{ 
+                      backgroundColor: index === 0 ? '#fff2e8' : '#fafafa',
+                      border: index === 0 ? '1px solid #ffa940' : '1px solid #e8e8e8'
+                    }}
+                  >
+                    <div style={{ textAlign: 'center' }}>
+                      <Text strong style={{ fontSize: '12px', color: '#666' }}>
+                        {loan.name}
+                      </Text>
+                      <br />
+                      <Text style={{ 
+                        fontSize: '16px', 
+                        fontWeight: 'bold',
+                        color: index === 0 ? '#fa8c16' : '#262626'
+                      }}>
+                        {formatCurrency(loan.monthlyPayment)}
+                      </Text>
+                      <br />
+                      <Text type="secondary" style={{ fontSize: '11px' }}>
+                        占比 {loan.percentage.toFixed(1)}%
+                      </Text>
+                      <br />
+                      <Text type="secondary" style={{ fontSize: '10px' }}>
+                        余额 {formatCurrency(loan.remainingBalance)}
+                      </Text>
+                    </div>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+            
+            {financialSummary.loanAnalysis.activeLoanCount > 4 && (
+              <div style={{ textAlign: 'center', marginTop: '16px' }}>
+                <Text type="secondary">
+                  显示前4个主要贷款，共{financialSummary.loanAnalysis.activeLoanCount}个活跃贷款
+                </Text>
+              </div>
+            )}
           </Card>
         </Col>
       </Row>

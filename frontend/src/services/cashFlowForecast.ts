@@ -1,6 +1,7 @@
 import { MockDataService } from './mockDataService';
 import { IncomeCalculator } from './incomeCalculator';
 import { CreditCardCalculator } from './creditCardCalculator';
+import { LoanCalculator } from './loanCalculator';
 import type { CashFlowRecord, Loan, CashFlowForecast, IncomeSource, CreditCard } from '../types';
 
 /**
@@ -23,7 +24,7 @@ export class CashFlowForecastService {
     
     // 3. 计算贷款月供
     const loans = MockDataService.getLoans() as Loan[];
-    const loanPayments = loans.reduce((total, loan) => total + loan.monthlyPayment, 0);
+    const loanPayments = LoanCalculator.calculateTotalMonthlyPayment(loans);
     
     // 4. 计算其他定期支出 (从现金流记录中提取定期支出)
     const cashFlowRecords = MockDataService.getCashFlowRecords() as CashFlowRecord[];
@@ -62,9 +63,23 @@ export class CashFlowForecastService {
    * @param startDate 起始日期
    * @returns 现金流预测数组
    */
-  static generateForecast(months: number = 24, startDate: Date = new Date()): CashFlowForecast[] {
-    const baseline = this.calculateMonthlyBaseline();
+  static generateForecast(months: number = 24, startDate: Date = new Date('2025-08-01')): CashFlowForecast[] {
     const forecasts: CashFlowForecast[] = [];
+    
+    // 获取贷款数据用于动态计算
+    const loans = MockDataService.getLoans() as Loan[];
+    const incomeSources = MockDataService.getIncomeSources() as IncomeSource[];
+    const monthlyIncome = IncomeCalculator.calculateTotalMonthlyIncome(incomeSources);
+    const creditCards = MockDataService.getCreditCards() as CreditCard[];
+    const creditCardCost = CreditCardCalculator.calculateTotalMonthlyCost(creditCards);
+    const cashFlowRecords = MockDataService.getCashFlowRecords() as CashFlowRecord[];
+    const recurringExpenses = cashFlowRecords
+      .filter((record) => 
+        record.type === 'expense' && 
+        record.isRecurring && 
+        record.recurringPattern === 'monthly'
+      )
+      .reduce((total, record) => total + record.amount, 0);
     
     let cumulativeWealth = 0; // 累计财富增量
     
@@ -72,18 +87,20 @@ export class CashFlowForecastService {
       const forecastDate = new Date(startDate);
       forecastDate.setMonth(forecastDate.getMonth() + i);
       
-      // 基础预测（暂时使用固定值，后续可以加入趋势分析）
-      const predictedIncome = baseline.monthlyIncome;
-      const predictedExpense = baseline.monthlyExpenses.total;
-      const netFlow = predictedIncome - predictedExpense;
+      // 动态计算该月的贷款月供（考虑贷款到期）
+      const dynamicLoanPayments = LoanCalculator.calculateMonthlyPaymentForMonth(loans, forecastDate);
+      
+      // 重新计算该月的总支出
+      const totalMonthlyExpense = creditCardCost + dynamicLoanPayments + recurringExpenses;
+      const netFlow = monthlyIncome - totalMonthlyExpense;
       
       // 累计财富变化
       cumulativeWealth += netFlow;
       
       forecasts.push({
         date: forecastDate.toISOString().slice(0, 7), // YYYY-MM 格式
-        predictedIncome,
-        predictedExpense,
+        predictedIncome: monthlyIncome,
+        predictedExpense: totalMonthlyExpense,
         predictedBalance: netFlow,
         confidence: 0.85 // 基础置信度85%
       });
@@ -98,7 +115,7 @@ export class CashFlowForecastService {
    * @param startDate 起始日期
    * @returns 财富增量数据
    */
-  static generateWealthGrowthData(months: number = 24, startDate: Date = new Date()) {
+  static generateWealthGrowthData(months: number = 24, startDate: Date = new Date('2025-08-01')) {
     const forecasts = this.generateForecast(months, startDate);
     
     const wealthGrowthData: Array<{
@@ -136,6 +153,14 @@ export class CashFlowForecastService {
     const baseline = this.calculateMonthlyBaseline();
     const wealthData = this.generateWealthGrowthData();
     
+    // 获取贷款分析
+    const loans = MockDataService.getLoans() as Loan[];
+    const loanAnalysis = LoanCalculator.analyzeLoanStructure(loans);
+    const debtToIncomeRatio = LoanCalculator.calculateDebtToIncomeRatio(
+      baseline.monthlyExpenses.loanPayments, 
+      baseline.monthlyIncome
+    );
+    
     // 找到最高和最低点
     const wealthValues = wealthData.map(d => d.cumulativeWealth);
     const maxWealth = Math.max(...wealthValues);
@@ -162,6 +187,17 @@ export class CashFlowForecastService {
         creditCardCostPercent: baseline.monthlyExpenses.total > 0 ? (baseline.monthlyExpenses.creditCardCost / baseline.monthlyExpenses.total) * 100 : 0,
         loanPaymentPercent: baseline.monthlyExpenses.total > 0 ? (baseline.monthlyExpenses.loanPayments / baseline.monthlyExpenses.total) * 100 : 0,
         otherExpensePercent: baseline.monthlyExpenses.total > 0 ? (baseline.monthlyExpenses.recurringExpenses / baseline.monthlyExpenses.total) * 100 : 0
+      },
+      
+      // 新增：贷款详细分析
+      loanAnalysis: {
+        totalMonthlyPayment: loanAnalysis.summary.totalMonthlyPayment,
+        totalRemainingDebt: loanAnalysis.summary.totalRemainingDebt,
+        activeLoanCount: loanAnalysis.summary.activeLoanCount,
+        repaymentProgress: loanAnalysis.summary.repaymentProgress,
+        debtToIncomeRatio,
+        loansByType: loanAnalysis.breakdown.byType,
+        topLoansByPayment: loanAnalysis.breakdown.byMonthlyPayment.slice(0, 5)
       }
     };
   }

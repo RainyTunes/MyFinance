@@ -41,14 +41,21 @@ export interface IncomeSource {
 
 export interface Loan {
   id: string;
-  name: string;
-  principal: number; // 本金（分）
-  interestRate: number; // 年利率（百分比）
-  monthlyPayment: number; // 月供（分）
-  startDate: string;
-  endDate: string;
-  remainingBalance: number; // 剩余本金（分）
-  bankName?: string;
+  name: string;                     // 贷款名称（如"广州房贷"）
+  principal: number;                // 总本金（分为单位）
+  monthlyPayment: number;           // 月供（分为单位）
+  startDate?: string | null;        // 开始时间（可选）
+  endDate?: string | null;          // 结束时间（可选）
+  totalTerms?: number | null;       // 总期数
+  remainingTerms?: number | null;   // 剩余期数
+  paidPrincipal?: number;           // 已还本金（分为单位）
+  remainingBalance: number;         // 剩余总待还本金（分为单位）
+  timeToMaturity?: string | null;   // 距离到期时间
+  notes?: string | null;            // 备注信息
+  bankName?: string;                // 银行名称
+  loanType?: 'mortgage' | 'consumer' | 'business' | 'credit_line' | 'other'; // 贷款类型
+  isActive: boolean;                // 是否活跃
+  lastUpdated: string;              // 最后更新时间
 }
 
 export interface Budget {
