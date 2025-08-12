@@ -1,18 +1,18 @@
 // 测试收入计算和多币种支持
-import mockData from '../frontend/src/data/mockData.json';
+import incomeSources from '../frontend/src/data/incomeSources.json';
 import type { IncomeSource } from '../shared/types';
 
 console.log('收入数据和多币种支持测试\n');
 console.log('=' * 60);
 
-const incomeSources = mockData.incomeSources as IncomeSource[];
+const incomeSourcesDataData = incomeSourcesData as IncomeSource[];
 
 // 1. 计算总收入
 let totalCNY = 0;
 let totalHKD = 0;
 
 console.log('收入来源详情:');
-incomeSources.forEach((source, index) => {
+incomeSourcesData.forEach((source, index) => {
   console.log(`${index + 1}. ${source.name}`);
   console.log(`   原始金额: ${source.currency === 'CNY' ? '¥' : 'HK$'}${(source.amount / 100).toLocaleString()}`);
   console.log(`   人民币等值: ¥${(source.amountInCNY / 100).toLocaleString()}`);
@@ -31,7 +31,7 @@ incomeSources.forEach((source, index) => {
 });
 
 // 2. 按币种汇总
-const activeSources = incomeSources.filter(s => s.isActive);
+const activeSources = incomeSourcesData.filter(s => s.isActive);
 const totalActiveIncomeCNY = activeSources.reduce((sum, s) => sum + s.amountInCNY, 0);
 
 console.log('=' * 60);
@@ -82,8 +82,8 @@ const expectedValues = {
 
 console.log('\n数据验证:');
 console.log('预期 vs 实际:');
-console.log(`我的工资: HK$${expectedValues.myHKDSalary} vs HK$${incomeSources[0].amount / 100}`);
-console.log(`广州租金: ¥${expectedValues.rentGuangzhou} vs ¥${incomeSources[4].amount / 100}`);
-console.log(`香港租金: HK$${expectedValues.rentHK} vs HK$${incomeSources[5].amount / 100}`);
-console.log(`外包收入: ¥${expectedValues.freelance} vs ¥${incomeSources[2].amount / 100}`);
-console.log(`羊毛收入: ¥${expectedValues.yangmao} vs ¥${incomeSources[3].amount / 100}`);
+console.log(`我的工资: HK$${expectedValues.myHKDSalary} vs HK$${incomeSourcesData[0].amount / 100}`);
+console.log(`广州租金: ¥${expectedValues.rentGuangzhou} vs ¥${incomeSourcesData[4].amount / 100}`);
+console.log(`香港租金: HK$${expectedValues.rentHK} vs HK$${incomeSourcesData[5].amount / 100}`);
+console.log(`外包收入: ¥${expectedValues.freelance} vs ¥${incomeSourcesData[2].amount / 100}`);
+console.log(`羊毛收入: ¥${expectedValues.yangmao} vs ¥${incomeSourcesData[3].amount / 100}`);

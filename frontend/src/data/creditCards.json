@@ -1,0 +1,120 @@
+[
+  {
+    "id": "cc001",
+    "cardNumber": "A0",
+    "bankName": "工商银行",
+    "creditLimit": 10000000,
+    "cardType": "香白",
+    "annualFee": 0,
+    "isActive": true,
+    "cashAdvanceRate": 0.006,
+    "notes": "接送机*2 吃饭龙腾*10",
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "cc002",
+    "cardNumber": "A5", 
+    "bankName": "光大银行",
+    "creditLimit": 5870000,
+    "cardType": "孝心标准",
+    "annualFee": 0,
+    "isActive": true,
+    "cashAdvanceRate": 0.006,
+    "notes": "接送机*2 龙腾*5 洁牙*2 就医*8",
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "cc003",
+    "cardNumber": "A10",
+    "bankName": "中国银行",
+    "creditLimit": 7500000,
+    "cardType": "南航",
+    "annualFee": 0,
+    "isActive": true,
+    "cashAdvanceRate": 0.006,
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "cc004",
+    "cardNumber": "A12",
+    "bankName": "中信银行",
+    "creditLimit": 1000000,
+    "cardType": "万豪白",
+    "annualFee": 98000,
+    "isActive": true,
+    "cashAdvanceRate": 0.006,
+    "notes": "1.25w房券/625r 龙腾*4 挂号*3",
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "cc005",
+    "cardNumber": "A16",
+    "bankName": "招商银行",
+    "creditLimit": 8000000,
+    "cardType": "鸟白",
+    "annualFee": 0,
+    "isActive": true,
+    "cashAdvanceRate": 0.006,
+    "notes": "体检 生日10倍1w分 积分1:2换万豪",
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "cc006",
+    "cardNumber": "A27",
+    "bankName": "建设银行",
+    "creditLimit": 8000000,
+    "cardType": "国航/大山/MUSE",
+    "annualFee": 180000,
+    "isActive": true,
+    "cashAdvanceRate": 0.006,
+    "notes": "接送机*3 酒店*2 代驾*6 就医*N PP*5",
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "cc007",
+    "cardNumber": "A28",
+    "bankName": "平安银行",
+    "creditLimit": 4000000,
+    "cardType": "Safari",
+    "annualFee": 0,
+    "isActive": true,
+    "cashAdvanceRate": 0.006,
+    "notes": "接送机*6 吃饭龙腾*6 酒店*2",
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "cc008",
+    "cardNumber": "B13",
+    "bankName": "招商银行",
+    "creditLimit": 6000000,
+    "cardType": "海贼王",
+    "annualFee": 0,
+    "isActive": true,
+    "cashAdvanceRate": 0.006,
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "cc009",
+    "cardNumber": "B16",
+    "bankName": "民生银行",
+    "creditLimit": 10000000,
+    "cardType": "南航豪白",
+    "annualFee": 288000,
+    "isActive": true,
+    "cashAdvanceRate": 0.006,
+    "notes": "1800积点",
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "cc010",
+    "cardNumber": "B26",
+    "bankName": "广发银行",
+    "creditLimit": 5000000,
+    "cardType": "南航白",
+    "annualFee": 80000,
+    "isActive": true,
+    "cashAdvanceRate": 0.006,
+    "notes": "6w里程 延误险",
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  }
+]

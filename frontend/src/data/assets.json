@@ -1,0 +1,26 @@
+[
+  {
+    "id": "asset001",
+    "name": "储蓄账户",
+    "type": "savings",
+    "currentValue": 5000000,
+    "description": "招商银行储蓄",
+    "lastUpdated": "2024-01-15"
+  },
+  {
+    "id": "asset002",
+    "name": "股票投资组合",
+    "type": "investment", 
+    "currentValue": 1200000,
+    "description": "A股投资组合",
+    "lastUpdated": "2024-01-15"
+  },
+  {
+    "id": "asset003",
+    "name": "公寓",
+    "type": "property",
+    "currentValue": 180000000,
+    "description": "自住房产",
+    "lastUpdated": "2024-01-01"
+  }
+]

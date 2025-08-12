@@ -1,0 +1,80 @@
+[
+  {
+    "id": "income001",
+    "name": "我的工资",
+    "amount": 3900000,
+    "currency": "HKD",
+    "amountInCNY": 3588000,
+    "exchangeRate": 0.92,
+    "category": "salary",
+    "description": "月薪39000港币",
+    "isActive": true,
+    "isRecurring": true,
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "income002",
+    "name": "太太收入",
+    "amount": 0,
+    "currency": "HKD",
+    "amountInCNY": 0,
+    "exchangeRate": 0.92,
+    "category": "salary",
+    "description": "家庭主妇，无收入",
+    "isActive": false,
+    "isRecurring": false,
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "income003",
+    "name": "外包收入",
+    "amount": 100000,
+    "currency": "CNY",
+    "amountInCNY": 100000,
+    "exchangeRate": 1.0,
+    "category": "freelance",
+    "description": "月外包收入1000人民币",
+    "isActive": true,
+    "isRecurring": true,
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "income004",
+    "name": "羊毛收入",
+    "amount": 100000,
+    "currency": "CNY", 
+    "amountInCNY": 100000,
+    "exchangeRate": 1.0,
+    "category": "other",
+    "description": "月羊毛收入1000人民币",
+    "isActive": true,
+    "isRecurring": true,
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "income005",
+    "name": "广州出租房租",
+    "amount": 450000,
+    "currency": "CNY",
+    "amountInCNY": 450000,
+    "exchangeRate": 1.0,
+    "category": "rental",
+    "description": "广州房屋出租收入4500人民币/月",
+    "isActive": true,
+    "isRecurring": true,
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "income006",
+    "name": "香港分租收入",
+    "amount": 300000,
+    "currency": "HKD",
+    "amountInCNY": 276000,
+    "exchangeRate": 0.92,
+    "category": "rental",
+    "description": "香港分租收入3000港币/月",
+    "isActive": true,
+    "isRecurring": true,
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
+  }
+]

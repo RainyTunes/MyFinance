@@ -1,0 +1,111 @@
+[
+  {
+    "id": "cf001",
+    "date": "2024-01-15",
+    "type": "income",
+    "amount": 3588000,
+    "originalAmount": {
+      "amount": 3900000,
+      "currency": "HKD",
+      "amountInCNY": 3588000,
+      "exchangeRate": 0.92
+    },
+    "category": "工资",
+    "description": "月薪39000港币",
+    "isRecurring": true,
+    "recurringPattern": "monthly"
+  },
+  {
+    "id": "cf002", 
+    "date": "2024-01-03",
+    "type": "expense",
+    "amount": 300000,
+    "category": "住房",
+    "description": "房租",
+    "isRecurring": true,
+    "recurringPattern": "monthly"
+  },
+  {
+    "id": "cf003",
+    "date": "2024-01-05", 
+    "type": "loan_payment",
+    "amount": 450000,
+    "category": "房贷",
+    "description": "房贷月供",
+    "isRecurring": true,
+    "recurringPattern": "monthly"
+  },
+  {
+    "id": "cf004",
+    "date": "2024-01-08",
+    "type": "expense", 
+    "amount": 150000,
+    "category": "生活费",
+    "description": "超市购物",
+    "tags": ["食物", "日用品"]
+  },
+  {
+    "id": "cf005",
+    "date": "2024-01-12",
+    "type": "expense",
+    "amount": 80000,
+    "category": "交通",
+    "description": "油费",
+    "tags": ["汽车", "燃油"]
+  },
+  {
+    "id": "cf006",
+    "date": "2024-01-18",
+    "type": "investment",
+    "amount": -200000,
+    "category": "投资",
+    "description": "股票投资",
+    "tags": ["股票", "长期投资"]
+  },
+  {
+    "id": "cf007",
+    "date": "2024-01-20",
+    "type": "income",
+    "amount": 100000,
+    "category": "外包",
+    "description": "外包收入1000元",
+    "isRecurring": true,
+    "recurringPattern": "monthly"
+  },
+  {
+    "id": "cf008",
+    "date": "2024-01-22",
+    "type": "income",
+    "amount": 450000,
+    "category": "租金",
+    "description": "广州出租房租收入",
+    "isRecurring": true,
+    "recurringPattern": "monthly"
+  },
+  {
+    "id": "cf009",
+    "date": "2024-01-25",
+    "type": "income",
+    "amount": 276000,
+    "originalAmount": {
+      "amount": 300000,
+      "currency": "HKD",
+      "amountInCNY": 276000,
+      "exchangeRate": 0.92
+    },
+    "category": "租金",
+    "description": "香港分租收入3000港币",
+    "isRecurring": true,
+    "recurringPattern": "monthly"
+  },
+  {
+    "id": "cf010",
+    "date": "2024-01-28",
+    "type": "income",
+    "amount": 100000,
+    "category": "羊毛",
+    "description": "羊毛收入1000元",
+    "isRecurring": true,
+    "recurringPattern": "monthly"
+  }
+]

@@ -1,5 +1,5 @@
 // 测试信用卡套现成本计算
-import mockData from '../frontend/src/data/mockData.json';
+import creditCards from '../frontend/src/data/creditCards.json';
 import type { CreditCard } from '../shared/types';
 
 // 模拟计算器逻辑（简化版）
@@ -24,11 +24,11 @@ function calculateMonthlyCost(card: CreditCard) {
 console.log('信用卡套现成本计算测试\n');
 console.log('=' * 60);
 
-const creditCards = mockData.creditCards as CreditCard[];
+const creditCardsData = creditCards as CreditCard[];
 let totalMonthlyCost = 0;
 let totalCreditLimit = 0;
 
-creditCards.forEach(card => {
+creditCardsData.forEach(card => {
   const cost = calculateMonthlyCost(card);
   console.log(`${cost.cardNumber} - ${cost.bankName} ${card.cardType}`);
   console.log(`  额度: ¥${cost.creditLimit.toLocaleString()}`);
@@ -50,4 +50,4 @@ console.log(`年化成本率: ${((totalMonthlyCost * 12 / totalCreditLimit) * 10
 // 与CSV汇总对比
 console.log('\nCSV汇总数据对比:');
 console.log(`CSV总额度: ¥1,218,200 vs 计算总额度: ¥${totalCreditLimit.toLocaleString()}`);
-console.log(`CSV年费总计: ¥6,860 vs 计算年费: ¥${(creditCards.reduce((sum, card) => sum + card.annualFee, 0) / 100).toLocaleString()}`);
+console.log(`CSV年费总计: ¥6,860 vs 计算年费: ¥${(creditCardsData.reduce((sum, card) => sum + card.annualFee, 0) / 100).toLocaleString()}`);

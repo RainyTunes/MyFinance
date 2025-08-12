@@ -1,0 +1,24 @@
+[
+  {
+    "id": "loan001",
+    "name": "房贷",
+    "principal": 150000000,
+    "interestRate": 4.5,
+    "monthlyPayment": 450000,
+    "startDate": "2023-01-01",
+    "endDate": "2053-01-01", 
+    "remainingBalance": 145000000,
+    "bankName": "工商银行"
+  },
+  {
+    "id": "loan002", 
+    "name": "车贷",
+    "principal": 30000000,
+    "interestRate": 6.5,
+    "monthlyPayment": 180000,
+    "startDate": "2023-06-01",
+    "endDate": "2028-06-01",
+    "remainingBalance": 25000000,
+    "bankName": "建设银行"
+  }
+]

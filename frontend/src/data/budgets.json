@@ -1,0 +1,26 @@
+[
+  {
+    "id": "budget001",
+    "category": "生活费",
+    "monthlyLimit": 300000,
+    "currentSpent": 150000,
+    "year": 2024,
+    "month": 1
+  },
+  {
+    "id": "budget002",
+    "category": "交通",
+    "monthlyLimit": 100000,
+    "currentSpent": 80000,
+    "year": 2024,
+    "month": 1
+  },
+  {
+    "id": "budget003",
+    "category": "娱乐",
+    "monthlyLimit": 80000,
+    "currentSpent": 35000,
+    "year": 2024,
+    "month": 1
+  }
+]

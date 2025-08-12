@@ -1,0 +1,20 @@
+[
+  {
+    "id": "goal001",
+    "name": "应急基金", 
+    "targetAmount": 3000000,
+    "currentAmount": 1500000,
+    "targetDate": "2024-12-31",
+    "category": "储蓄",
+    "description": "6个月生活费应急基金"
+  },
+  {
+    "id": "goal002",
+    "name": "度假基金",
+    "targetAmount": 500000,
+    "currentAmount": 120000,
+    "targetDate": "2024-08-01", 
+    "category": "休闲",
+    "description": "暑期旅游基金"
+  }
+]
