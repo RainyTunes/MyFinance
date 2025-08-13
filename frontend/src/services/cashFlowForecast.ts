@@ -2,7 +2,8 @@ import { MockDataService } from './mockDataService';
 import { IncomeCalculator } from './incomeCalculator';
 import { CreditCardCalculator } from './creditCardCalculator';
 import { LoanCalculator } from './loanCalculator';
-import type { CashFlowRecord, Loan, CashFlowForecast, IncomeSource, CreditCard } from '../types';
+import { LivingExpenseCalculator } from './livingExpenseCalculator';
+import type { CashFlowRecord, Loan, CashFlowForecast, IncomeSource, CreditCard, LivingExpense } from '../types';
 
 /**
  * 现金流预测服务
@@ -26,7 +27,11 @@ export class CashFlowForecastService {
     const loans = MockDataService.getLoans() as Loan[];
     const loanPayments = LoanCalculator.calculateTotalMonthlyPayment(loans);
     
-    // 4. 计算其他定期支出 (从现金流记录中提取定期支出)
+    // 4. 计算生活开销
+    const livingExpenses = MockDataService.getLivingExpenses() as LivingExpense[];
+    const livingExpenseCost = LivingExpenseCalculator.calculateTotalMonthlyExpense(livingExpenses);
+    
+    // 5. 计算其他定期支出 (从现金流记录中提取定期支出)
     const cashFlowRecords = MockDataService.getCashFlowRecords() as CashFlowRecord[];
     const recurringExpenses = cashFlowRecords
       .filter((record) => 
@@ -36,8 +41,8 @@ export class CashFlowForecastService {
       )
       .reduce((total, record) => total + record.amount, 0);
     
-    // 5. 计算净现金流
-    const totalMonthlyExpense = creditCardCost + loanPayments + recurringExpenses;
+    // 6. 计算净现金流
+    const totalMonthlyExpense = creditCardCost + loanPayments + livingExpenseCost + recurringExpenses;
     const netCashFlow = monthlyIncome - totalMonthlyExpense;
     
     return {
@@ -45,6 +50,7 @@ export class CashFlowForecastService {
       monthlyExpenses: {
         creditCardCost,
         loanPayments,
+        livingExpenseCost,
         recurringExpenses,
         total: totalMonthlyExpense
       },
@@ -63,7 +69,7 @@ export class CashFlowForecastService {
    * @param startDate 起始日期
    * @returns 现金流预测数组
    */
-  static generateForecast(months: number = 24, startDate: Date = new Date('2025-08-01')): CashFlowForecast[] {
+  static generateForecast(months: number = 120, startDate: Date = new Date('2025-08-01')): CashFlowForecast[] {
     const forecasts: CashFlowForecast[] = [];
     
     // 获取贷款数据用于动态计算
@@ -72,6 +78,8 @@ export class CashFlowForecastService {
     const monthlyIncome = IncomeCalculator.calculateTotalMonthlyIncome(incomeSources);
     const creditCards = MockDataService.getCreditCards() as CreditCard[];
     const creditCardCost = CreditCardCalculator.calculateTotalMonthlyCost(creditCards);
+    const livingExpenses = MockDataService.getLivingExpenses() as LivingExpense[];
+    const livingExpenseCost = LivingExpenseCalculator.calculateTotalMonthlyExpense(livingExpenses);
     const cashFlowRecords = MockDataService.getCashFlowRecords() as CashFlowRecord[];
     const recurringExpenses = cashFlowRecords
       .filter((record) => 
@@ -91,7 +99,7 @@ export class CashFlowForecastService {
       const dynamicLoanPayments = LoanCalculator.calculateMonthlyPaymentForMonth(loans, forecastDate);
       
       // 重新计算该月的总支出
-      const totalMonthlyExpense = creditCardCost + dynamicLoanPayments + recurringExpenses;
+      const totalMonthlyExpense = creditCardCost + dynamicLoanPayments + livingExpenseCost + recurringExpenses;
       const netFlow = monthlyIncome - totalMonthlyExpense;
       
       // 累计财富变化
@@ -115,7 +123,7 @@ export class CashFlowForecastService {
    * @param startDate 起始日期
    * @returns 财富增量数据
    */
-  static generateWealthGrowthData(months: number = 24, startDate: Date = new Date('2025-08-01')) {
+  static generateWealthGrowthData(months: number = 120, startDate: Date = new Date('2025-08-01')) {
     const forecasts = this.generateForecast(months, startDate);
     
     const wealthGrowthData: Array<{
@@ -161,6 +169,14 @@ export class CashFlowForecastService {
       baseline.monthlyIncome
     );
     
+    // 获取生活开销分析
+    const livingExpenses = MockDataService.getLivingExpenses() as LivingExpense[];
+    const livingExpenseAnalysis = LivingExpenseCalculator.analyzeLivingExpenses(livingExpenses);
+    const livingExpenseToIncomeRatio = LivingExpenseCalculator.calculateExpenseToIncomeRatio(
+      livingExpenseAnalysis.totalMonthlyExpense,
+      baseline.monthlyIncome
+    );
+    
     // 找到最高和最低点
     const wealthValues = wealthData.map(d => d.cumulativeWealth);
     const maxWealth = Math.max(...wealthValues);
@@ -172,8 +188,12 @@ export class CashFlowForecastService {
       currentMonthlyExpense: baseline.monthlyExpenses.total,
       currentNetCashFlow: baseline.netCashFlow,
       
-      // 预测摘要
-      projectedWealthAfter24Months: finalWealth,
+      // 预测摘要（10年期）
+      projectedWealthAfter120Months: finalWealth,
+      projectedWealthAfter24Months: wealthData[23]?.cumulativeWealth || 0,
+      projectedWealthAfter36Months: wealthData[35]?.cumulativeWealth || 0,
+      projectedWealthAfter60Months: wealthData[59]?.cumulativeWealth || 0,
+      projectedWealthAfter84Months: wealthData[83]?.cumulativeWealth || 0, // 7年
       projectedMaxWealth: maxWealth,
       projectedMinWealth: minWealth,
       
@@ -186,6 +206,7 @@ export class CashFlowForecastService {
       expenseBreakdown: {
         creditCardCostPercent: baseline.monthlyExpenses.total > 0 ? (baseline.monthlyExpenses.creditCardCost / baseline.monthlyExpenses.total) * 100 : 0,
         loanPaymentPercent: baseline.monthlyExpenses.total > 0 ? (baseline.monthlyExpenses.loanPayments / baseline.monthlyExpenses.total) * 100 : 0,
+        livingExpensePercent: baseline.monthlyExpenses.total > 0 ? (baseline.monthlyExpenses.livingExpenseCost / baseline.monthlyExpenses.total) * 100 : 0,
         otherExpensePercent: baseline.monthlyExpenses.total > 0 ? (baseline.monthlyExpenses.recurringExpenses / baseline.monthlyExpenses.total) * 100 : 0
       },
       
@@ -198,6 +219,15 @@ export class CashFlowForecastService {
         debtToIncomeRatio,
         loansByType: loanAnalysis.breakdown.byType,
         topLoansByPayment: loanAnalysis.breakdown.byMonthlyPayment.slice(0, 5)
+      },
+      
+      // 新增：生活开销详细分析
+      livingExpenseAnalysis: {
+        totalMonthlyExpense: livingExpenseAnalysis.totalMonthlyExpense,
+        livingExpenseToIncomeRatio,
+        categoryBreakdown: livingExpenseAnalysis.categoryBreakdown,
+        currencyBreakdown: livingExpenseAnalysis.currencyBreakdown,
+        topExpenses: LivingExpenseCalculator.getTopExpenses(livingExpenses, 5)
       }
     };
   }

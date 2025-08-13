@@ -138,7 +138,7 @@ export class LoanCalculator {
    * @param months 预测月数
    * @returns 还款预测
    */
-  static forecastLoanPayment(loan: Loan, months: number = 24) {
+  static forecastLoanPayment(loan: Loan, months: number = 120) {
     if (!loan.isActive || !loan.remainingTerms) {
       return null;
     }

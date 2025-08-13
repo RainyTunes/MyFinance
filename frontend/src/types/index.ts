@@ -163,3 +163,34 @@ export interface CreditCardCostCalculation {
   monthlyAnnualFee: number;      // 年费分摊/月
   totalMonthlyCost: number;      // 每月总成本
 }
+
+// 生活开销数据模型
+export interface LivingExpense {
+  id: string;
+  name: string;                  // 开销名称（如"房租"、"水费"等）
+  amount: number;                // 原始金额（分为单位）
+  currency: Currency;            // 币种（CNY或HKD）
+  amountInCNY: number;           // 人民币金额（分为单位）
+  exchangeRate: number;          // 汇率（相对于人民币）
+  category: 'housing' | 'utilities' | 'food' | 'transportation' | 'entertainment' | 'subscription' | 'other';
+  description?: string;          // 描述信息
+  isRecurring: boolean;          // 是否定期支出
+  recurringPattern: 'monthly' | 'yearly' | 'weekly'; // 定期模式
+  isActive: boolean;             // 是否活跃
+  lastUpdated: string;           // 最后更新时间
+}
+
+// 生活开销分析结果
+export interface LivingExpenseAnalysis {
+  totalMonthlyExpense: number;   // 总月支出（人民币分）
+  categoryBreakdown: Record<string, {
+    totalAmount: number;         // 该类别总金额
+    items: LivingExpense[];      // 该类别的支出项目
+    percentage: number;          // 占总支出的百分比
+  }>;
+  currencyBreakdown: Record<Currency, {
+    totalAmount: number;         // 该币种总金额（原币种）
+    totalAmountInCNY: number;    // 该币种总金额（人民币）
+    percentage: number;          // 占总支出的百分比
+  }>;
+}

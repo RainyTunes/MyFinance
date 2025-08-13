@@ -44,14 +44,14 @@ const ForecastPage: React.FC = () => {
           现金流预测分析
         </Title>
         <Paragraph type="secondary">
-          基于当前收入结构和支出模式，预测未来24个月的财富变化趋势
+          基于当前收入结构和支出模式，预测未来120个月（10年）的财富变化趋势
         </Paragraph>
       </div>
 
       {/* 提示信息 */}
       <Alert
         message="预测说明"
-        description="本预测基于当前的收入来源、信用卡套现成本、贷款月供等数据计算。实际结果可能因市场变化、个人支出调整等因素而有所不同。"
+        description="本预测基于当前的收入来源、信用卡套现成本、贷款月供、生活开销等数据计算10年期财务状况。实际结果可能因市场变化、个人支出调整等因素而有所不同。"
         type="info"
         icon={<InfoCircleOutlined />}
         style={{ marginBottom: '24px' }}
@@ -106,11 +106,59 @@ const ForecastPage: React.FC = () => {
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
-              title="24个月后预计财富增量"
-              value={financialSummary.projectedWealthAfter24Months / 100}
+              title="10年后预计财富增量"
+              value={financialSummary.projectedWealthAfter120Months / 100}
               precision={0}
               prefix={<CalendarOutlined />}
+              valueStyle={getStatisticValueStyle(financialSummary.projectedWealthAfter120Months)}
+              formatter={(value) => formatCurrency(Number(value) * 100)}
+            />
+          </Card>
+        </Col>
+      </Row>
+
+      {/* 时间节点预测 */}
+      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+        <Col xs={12} sm={6} lg={6}>
+          <Card size="small">
+            <Statistic
+              title="2年后"
+              value={financialSummary.projectedWealthAfter24Months / 100}
+              precision={0}
               valueStyle={getStatisticValueStyle(financialSummary.projectedWealthAfter24Months)}
+              formatter={(value) => formatCurrency(Number(value) * 100)}
+            />
+          </Card>
+        </Col>
+        <Col xs={12} sm={6} lg={6}>
+          <Card size="small">
+            <Statistic
+              title="5年后"
+              value={financialSummary.projectedWealthAfter60Months / 100}
+              precision={0}
+              valueStyle={getStatisticValueStyle(financialSummary.projectedWealthAfter60Months)}
+              formatter={(value) => formatCurrency(Number(value) * 100)}
+            />
+          </Card>
+        </Col>
+        <Col xs={12} sm={6} lg={6}>
+          <Card size="small">
+            <Statistic
+              title="7年后"
+              value={financialSummary.projectedWealthAfter84Months / 100}
+              precision={0}
+              valueStyle={getStatisticValueStyle(financialSummary.projectedWealthAfter84Months)}
+              formatter={(value) => formatCurrency(Number(value) * 100)}
+            />
+          </Card>
+        </Col>
+        <Col xs={12} sm={6} lg={6}>
+          <Card size="small">
+            <Statistic
+              title="最大峰值"
+              value={financialSummary.projectedMaxWealth / 100}
+              precision={0}
+              valueStyle={{ color: '#52c41a' }}
               formatter={(value) => formatCurrency(Number(value) * 100)}
             />
           </Card>
@@ -120,8 +168,8 @@ const ForecastPage: React.FC = () => {
       {/* 主要图表 */}
       <Row gutter={[16, 16]}>
         <Col span={24}>
-          <Card title="财富增量趋势图" bodyStyle={{ padding: '20px' }}>
-            <WealthGrowthChart months={24} height={500} />
+          <Card title="财富增量趋势图（10年期）" bodyStyle={{ padding: '20px' }}>
+            <WealthGrowthChart months={120} height={500} />
           </Card>
         </Col>
       </Row>
@@ -145,6 +193,15 @@ const ForecastPage: React.FC = () => {
               </Col>
               <Col span={12} style={{ textAlign: 'right' }}>
                 <Text>{financialSummary.expenseBreakdown.loanPaymentPercent.toFixed(1)}%</Text>
+              </Col>
+            </Row>
+            <Divider style={{ margin: '8px 0' }} />
+            <Row gutter={[16, 8]}>
+              <Col span={12}>
+                <Text strong>生活开销</Text>
+              </Col>
+              <Col span={12} style={{ textAlign: 'right' }}>
+                <Text>{financialSummary.expenseBreakdown.livingExpensePercent.toFixed(1)}%</Text>
               </Col>
             </Row>
             <Divider style={{ margin: '8px 0' }} />
@@ -290,6 +347,66 @@ const ForecastPage: React.FC = () => {
                 </Text>
               </div>
             )}
+          </Card>
+        </Col>
+      </Row>
+
+      {/* 生活开销分析 */}
+      <Row gutter={[16, 16]} style={{ marginTop: '24px' }}>
+        <Col xs={24} lg={12}>
+          <Card title="生活开销分析" bodyStyle={{ padding: '20px' }}>
+            <Row gutter={[16, 8]}>
+              <Col span={12}>
+                <Text strong>总生活开销</Text>
+              </Col>
+              <Col span={12} style={{ textAlign: 'right' }}>
+                <Text style={{ color: '#ff4d4f' }}>
+                  {formatCurrency(financialSummary.livingExpenseAnalysis.totalMonthlyExpense)}
+                </Text>
+              </Col>
+            </Row>
+            <Divider style={{ margin: '8px 0' }} />
+            <Row gutter={[16, 8]}>
+              <Col span={12}>
+                <Text strong>生活开销收入比</Text>
+              </Col>
+              <Col span={12} style={{ textAlign: 'right' }}>
+                <Text style={{ color: financialSummary.livingExpenseAnalysis.livingExpenseToIncomeRatio > 30 ? '#ff4d4f' : '#faad14' }}>
+                  {financialSummary.livingExpenseAnalysis.livingExpenseToIncomeRatio.toFixed(1)}%
+                </Text>
+              </Col>
+            </Row>
+            <Divider style={{ margin: '8px 0' }} />
+            <Row gutter={[16, 8]}>
+              <Col span={12}>
+                <Text strong>港币支出占比</Text>
+              </Col>
+              <Col span={12} style={{ textAlign: 'right' }}>
+                <Text>
+                  {financialSummary.livingExpenseAnalysis.currencyBreakdown.HKD?.percentage.toFixed(1) || 0}%
+                </Text>
+              </Col>
+            </Row>
+          </Card>
+        </Col>
+
+        <Col xs={24} lg={12}>
+          <Card title="主要生活开销" bodyStyle={{ padding: '20px' }}>
+            {financialSummary.livingExpenseAnalysis.topExpenses.slice(0, 4).map((expense, index) => (
+              <div key={expense.id}>
+                <Row gutter={[16, 8]}>
+                  <Col span={12}>
+                    <Text strong style={{ fontSize: '12px' }}>{expense.name}</Text>
+                  </Col>
+                  <Col span={12} style={{ textAlign: 'right' }}>
+                    <Text style={{ color: index === 0 ? '#fa8c16' : '#262626' }}>
+                      {formatCurrency(expense.amountInCNY)}
+                    </Text>
+                  </Col>
+                </Row>
+                {index < 3 && <Divider style={{ margin: '8px 0' }} />}
+              </div>
+            ))}
           </Card>
         </Col>
       </Row>

@@ -8,7 +8,7 @@ interface WealthGrowthChartProps {
 }
 
 const WealthGrowthChart: React.FC<WealthGrowthChartProps> = ({ 
-  months = 24, 
+  months = 120, 
   height = 400 
 }) => {
   const chartRef = useRef<HTMLDivElement>(null);
@@ -23,10 +23,29 @@ const WealthGrowthChart: React.FC<WealthGrowthChartProps> = ({
     // 获取财富增长数据
     const wealthData = CashFlowForecastService.generateWealthGrowthData(months);
     
-    // 准备图表数据
-    const xAxisData = wealthData.map(item => {
+    // 准备图表数据 - 对于长期数据，优化X轴显示
+    const xAxisData = wealthData.map((item, index) => {
       const [year, month] = item.month.split('-');
-      return `${year}年${parseInt(month)}月`;
+      // 对于长期数据，只显示年份或者关键月份
+      if (months > 60) {
+        // 10年期数据：只显示每年1月，或者每12个月显示一次
+        if (parseInt(month) === 1) {
+          return `${year}年`;
+        } else if (index % 12 === 0) {
+          return `${year}年${parseInt(month)}月`;
+        }
+        return '';
+      } else if (months > 36) {
+        // 5年期数据：只显示1月和7月，或者每6个月显示一次
+        if (parseInt(month) === 1 || parseInt(month) === 7) {
+          return `${year}年${parseInt(month)}月`;
+        } else if (index % 6 === 0) {
+          return `${year}年${parseInt(month)}月`;
+        }
+        return '';
+      } else {
+        return `${year}年${parseInt(month)}月`;
+      }
     });
     
     const monthlyFlowData = wealthData.map(item => (item.monthlyNetFlow / 100).toFixed(0));
@@ -34,8 +53,8 @@ const WealthGrowthChart: React.FC<WealthGrowthChartProps> = ({
 
     const option: echarts.EChartsOption = {
       title: {
-        text: '未来24个月财富增量预测',
-        subtext: '基于当前收入和支出结构的预测分析',
+        text: `未来${months}个月财富增量预测`,
+        subtext: '基于当前收入、支出结构和贷款到期时间的预测分析',
         left: 'center',
         textStyle: {
           fontSize: 18,
@@ -180,9 +199,15 @@ const WealthGrowthChart: React.FC<WealthGrowthChartProps> = ({
           show: true,
           xAxisIndex: 0,
           start: 0,
-          end: 100,
+          end: months > 60 ? 25 : months > 24 ? 40 : 100, // 对于10年数据，默认显示前25%
           height: 20,
           bottom: 20
+        },
+        {
+          type: 'inside',
+          xAxisIndex: 0,
+          start: 0,
+          end: months > 60 ? 25 : months > 24 ? 40 : 100
         }
       ]
     };

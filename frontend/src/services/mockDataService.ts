@@ -8,6 +8,7 @@ import assets from '../data/assets.json';
 import financialGoals from '../data/financialGoals.json';
 import creditCards from '../data/creditCards.json';
 import incomeSources from '../data/incomeSources.json';
+import livingExpenses from '../data/livingExpenses.json';
 
 /**
  * Mock数据服务 - 聚合所有模块化的数据
@@ -86,6 +87,14 @@ export class MockDataService {
    */
   static getIncomeSources() {
     return incomeSources;
+  }
+
+  /**
+   * 获取生活开销数据
+   * @returns 生活开销数组
+   */
+  static getLivingExpenses() {
+    return livingExpenses;
   }
 
   /**
