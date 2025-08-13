@@ -76,5 +76,18 @@
     "isActive": true,
     "isRecurring": true,
     "lastUpdated": "2024-01-15T08:00:00.000Z"
+  },
+  {
+    "id": "income007",
+    "name": "奖金（粗略计算）",
+    "amount": 300000,
+    "currency": "HKD",
+    "amountInCNY": 276000,
+    "exchangeRate": 0.92,
+    "category": "salary",
+    "description": "月度奖金收入3000港币",
+    "isActive": true,
+    "isRecurring": true,
+    "lastUpdated": "2024-01-15T08:00:00.000Z"
   }
 ]
