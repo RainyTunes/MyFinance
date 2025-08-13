@@ -33,7 +33,13 @@
     "bankName": "银行",
     "loanType": "mortgage",
     "isActive": true,
-    "lastUpdated": "2025-08-12"
+    "lastUpdated": "2025-08-12",
+    "floatingPayment": {
+      "enabled": true,
+      "basePayment": 477900,
+      "monthlyDecrement": 3864,
+      "baseDate": "2024-09-01"
+    }
   },
   {
     "id": "loan003",

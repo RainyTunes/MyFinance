@@ -49,6 +49,14 @@ export interface Loan {
   endDate: string;
   remainingBalance: number; // 剩余本金（分）
   bankName?: string;
+  
+  // 浮动月供配置（针对九江房贷等特殊情况）
+  floatingPayment?: {
+    enabled: boolean;               // 是否启用浮动月供
+    basePayment: number;            // 基础月供（分为单位）
+    monthlyDecrement: number;       // 每月递减金额（分为单位）
+    baseDate: string;               // 基准时间（从什么时候开始计算）
+  };
 }
 
 export interface Budget {
