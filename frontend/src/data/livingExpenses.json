@@ -138,5 +138,33 @@
     "recurringPattern": "monthly",
     "isActive": true,
     "lastUpdated": "2025-08-12"
+  },
+  {
+    "id": "living011",
+    "name": "家庭保险开销",
+    "amount": 2117000,
+    "currency": "CNY",
+    "amountInCNY": 2117000,
+    "exchangeRate": 1.0,
+    "category": "other",
+    "description": "家庭保险年费",
+    "isRecurring": true,
+    "recurringPattern": "yearly",
+    "isActive": true,
+    "lastUpdated": "2025-01-20"
+  },
+  {
+    "id": "living012",
+    "name": "企业运营费用",
+    "amount": 320000,
+    "currency": "CNY",
+    "amountInCNY": 320000,
+    "exchangeRate": 1.0,
+    "category": "other",
+    "description": "企业运营年费",
+    "isRecurring": true,
+    "recurringPattern": "yearly",
+    "isActive": true,
+    "lastUpdated": "2025-01-20"
   }
 ]

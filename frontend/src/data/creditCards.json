@@ -34,18 +34,7 @@
     "cashAdvanceRate": 0.006,
     "lastUpdated": "2024-01-15T08:00:00.000Z"
   },
-  {
-    "id": "cc004",
-    "cardNumber": "A12",
-    "bankName": "中信银行",
-    "creditLimit": 1000000,
-    "cardType": "万豪白",
-    "annualFee": 98000,
-    "isActive": true,
-    "cashAdvanceRate": 0.006,
-    "notes": "1.25w房券/625r 龙腾*4 挂号*3",
-    "lastUpdated": "2024-01-15T08:00:00.000Z"
-  },
+
   {
     "id": "cc005",
     "cardNumber": "A16",
@@ -64,7 +53,7 @@
     "bankName": "建设银行",
     "creditLimit": 8000000,
     "cardType": "国航/大山/MUSE",
-    "annualFee": 180000,
+    "annualFee": 0,
     "isActive": true,
     "cashAdvanceRate": 0.006,
     "notes": "接送机*3 酒店*2 代驾*6 就医*N PP*5",

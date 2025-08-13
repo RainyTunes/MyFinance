@@ -13,8 +13,19 @@ export class LivingExpenseCalculator {
    */
   static calculateTotalMonthlyExpense(expenses: LivingExpense[]): number {
     return expenses
-      .filter(expense => expense.isActive && expense.recurringPattern === 'monthly')
-      .reduce((total, expense) => total + expense.amountInCNY, 0);
+      .filter(expense => expense.isActive)
+      .reduce((total, expense) => {
+        if (expense.recurringPattern === 'monthly') {
+          return total + expense.amountInCNY;
+        } else if (expense.recurringPattern === 'yearly') {
+          // 年付开销转换为月付（除以12）
+          return total + Math.round(expense.amountInCNY / 12);
+        } else if (expense.recurringPattern === 'weekly') {
+          // 周付开销转换为月付（乘以4.33）
+          return total + Math.round(expense.amountInCNY * 4.33);
+        }
+        return total;
+      }, 0);
   }
   
   /**
@@ -23,9 +34,7 @@ export class LivingExpenseCalculator {
    * @returns 生活开销分析结果
    */
   static analyzeLivingExpenses(expenses: LivingExpense[]): LivingExpenseAnalysis {
-    const activeMonthlyExpenses = expenses.filter(
-      expense => expense.isActive && expense.recurringPattern === 'monthly'
-    );
+    const activeExpenses = expenses.filter(expense => expense.isActive);
     
     const totalMonthlyExpense = this.calculateTotalMonthlyExpense(expenses);
     
@@ -36,7 +45,7 @@ export class LivingExpenseCalculator {
       percentage: number;
     }> = {};
     
-    activeMonthlyExpenses.forEach(expense => {
+    activeExpenses.forEach(expense => {
       const category = expense.category;
       
       if (!categoryBreakdown[category]) {
@@ -47,7 +56,17 @@ export class LivingExpenseCalculator {
         };
       }
       
-      categoryBreakdown[category].totalAmount += expense.amountInCNY;
+      // 计算月度等价金额
+      let monthlyEquivalent = 0;
+      if (expense.recurringPattern === 'monthly') {
+        monthlyEquivalent = expense.amountInCNY;
+      } else if (expense.recurringPattern === 'yearly') {
+        monthlyEquivalent = Math.round(expense.amountInCNY / 12);
+      } else if (expense.recurringPattern === 'weekly') {
+        monthlyEquivalent = Math.round(expense.amountInCNY * 4.33);
+      }
+      
+      categoryBreakdown[category].totalAmount += monthlyEquivalent;
       categoryBreakdown[category].items.push(expense);
     });
     
@@ -65,7 +84,7 @@ export class LivingExpenseCalculator {
       percentage: number;
     }> = {};
     
-    activeMonthlyExpenses.forEach(expense => {
+    activeExpenses.forEach(expense => {
       const currency = expense.currency;
       
       if (!currencyBreakdown[currency]) {
@@ -76,8 +95,22 @@ export class LivingExpenseCalculator {
         };
       }
       
-      currencyBreakdown[currency].totalAmount += expense.amount;
-      currencyBreakdown[currency].totalAmountInCNY += expense.amountInCNY;
+      // 计算月度等价金额
+      let monthlyEquivalentOriginal = 0;
+      let monthlyEquivalentCNY = 0;
+      if (expense.recurringPattern === 'monthly') {
+        monthlyEquivalentOriginal = expense.amount;
+        monthlyEquivalentCNY = expense.amountInCNY;
+      } else if (expense.recurringPattern === 'yearly') {
+        monthlyEquivalentOriginal = Math.round(expense.amount / 12);
+        monthlyEquivalentCNY = Math.round(expense.amountInCNY / 12);
+      } else if (expense.recurringPattern === 'weekly') {
+        monthlyEquivalentOriginal = Math.round(expense.amount * 4.33);
+        monthlyEquivalentCNY = Math.round(expense.amountInCNY * 4.33);
+      }
+      
+      currencyBreakdown[currency].totalAmount += monthlyEquivalentOriginal;
+      currencyBreakdown[currency].totalAmountInCNY += monthlyEquivalentCNY;
     });
     
     // 计算各币种百分比
@@ -120,9 +153,22 @@ export class LivingExpenseCalculator {
    */
   static getTopExpenses(expenses: LivingExpense[], limit: number = 5): LivingExpense[] {
     return expenses
-      .filter(expense => expense.isActive && expense.recurringPattern === 'monthly')
-      .sort((a, b) => b.amountInCNY - a.amountInCNY)
-      .slice(0, limit);
+      .filter(expense => expense.isActive)
+      .map(expense => {
+        // 计算月度等价金额用于排序
+        let monthlyEquivalent = 0;
+        if (expense.recurringPattern === 'monthly') {
+          monthlyEquivalent = expense.amountInCNY;
+        } else if (expense.recurringPattern === 'yearly') {
+          monthlyEquivalent = Math.round(expense.amountInCNY / 12);
+        } else if (expense.recurringPattern === 'weekly') {
+          monthlyEquivalent = Math.round(expense.amountInCNY * 4.33);
+        }
+        return { ...expense, monthlyEquivalent };
+      })
+      .sort((a, b) => b.monthlyEquivalent - a.monthlyEquivalent)
+      .slice(0, limit)
+      .map(({ monthlyEquivalent, ...expense }) => expense); // 移除临时字段
   }
   
   /**
