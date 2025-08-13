@@ -14,7 +14,39 @@ export class LoanCalculator {
   static calculateTotalMonthlyPayment(loans: Loan[]): number {
     return loans
       .filter(loan => loan.isActive)
-      .reduce((total, loan) => total + loan.monthlyPayment, 0);
+      .reduce((total, loan) => total + this.calculateLoanMonthlyPayment(loan), 0);
+  }
+
+  /**
+   * 计算单个贷款的月供（考虑浮动月供）
+   * @param loan 贷款信息
+   * @param targetDate 目标日期（可选，默认为当前月）
+   * @returns 该贷款在指定月份的月供（分为单位）
+   */
+  static calculateLoanMonthlyPayment(loan: Loan, targetDate?: Date): number {
+    // 如果没有浮动月供配置，返回固定月供
+    if (!loan.floatingPayment?.enabled) {
+      return loan.monthlyPayment;
+    }
+
+    const currentDate = targetDate || new Date();
+    const baseDate = new Date(loan.floatingPayment.baseDate);
+    
+    // 计算从基准日期到目标日期的月数差
+    const monthsDiff = (currentDate.getFullYear() - baseDate.getFullYear()) * 12 + 
+                      (currentDate.getMonth() - baseDate.getMonth());
+    
+    // 如果目标日期早于基准日期，使用基础月供
+    if (monthsDiff < 0) {
+      return loan.floatingPayment.basePayment;
+    }
+
+    // 计算浮动后的月供 = 基础月供 - (月数差 * 每月递减金额)
+    const floatingPayment = loan.floatingPayment.basePayment - 
+                           (monthsDiff * loan.floatingPayment.monthlyDecrement);
+    
+    // 确保月供不会为负数
+    return Math.max(floatingPayment, 0);
   }
 
   /**
@@ -27,7 +59,7 @@ export class LoanCalculator {
     return loans
       .filter(loan => loan.isActive)
       .filter(loan => this.isLoanActiveInMonth(loan, targetDate))
-      .reduce((total, loan) => total + loan.monthlyPayment, 0);
+      .reduce((total, loan) => total + this.calculateLoanMonthlyPayment(loan, targetDate), 0);
   }
 
   /**
@@ -88,7 +120,7 @@ export class LoanCalculator {
       
       acc[type].count++;
       acc[type].totalPrincipal += loan.principal;
-      acc[type].totalMonthlyPayment += loan.monthlyPayment;
+      acc[type].totalMonthlyPayment += this.calculateLoanMonthlyPayment(loan);
       acc[type].totalRemainingBalance += loan.remainingBalance;
       
       return acc;
@@ -102,8 +134,12 @@ export class LoanCalculator {
     // 计算还款进度
     const repaymentProgress = totalPrincipal > 0 ? (totalPaidPrincipal / totalPrincipal) * 100 : 0;
     
-    // 按月供排序（降序）
-    const loansByMonthlyPayment = [...activeLoans].sort((a, b) => b.monthlyPayment - a.monthlyPayment);
+    // 按月供排序（降序）- 使用动态月供计算
+    const loansByMonthlyPayment = [...activeLoans].sort((a, b) => {
+      const aPayment = this.calculateLoanMonthlyPayment(a);
+      const bPayment = this.calculateLoanMonthlyPayment(b);
+      return bPayment - aPayment;
+    });
     
     return {
       summary: {
@@ -116,13 +152,16 @@ export class LoanCalculator {
       },
       breakdown: {
         byType: loansByType,
-        byMonthlyPayment: loansByMonthlyPayment.map(loan => ({
-          id: loan.id,
-          name: loan.name,
-          monthlyPayment: loan.monthlyPayment,
-          remainingBalance: loan.remainingBalance,
-          percentage: totalMonthlyPayment > 0 ? (loan.monthlyPayment / totalMonthlyPayment) * 100 : 0
-        }))
+        byMonthlyPayment: loansByMonthlyPayment.map(loan => {
+          const dynamicMonthlyPayment = this.calculateLoanMonthlyPayment(loan);
+          return {
+            id: loan.id,
+            name: loan.name,
+            monthlyPayment: dynamicMonthlyPayment,
+            remainingBalance: loan.remainingBalance,
+            percentage: totalMonthlyPayment > 0 ? (dynamicMonthlyPayment / totalMonthlyPayment) * 100 : 0
+          };
+        })
       },
       insights: {
         largestLoan: loansByMonthlyPayment[0] || null,
@@ -144,13 +183,21 @@ export class LoanCalculator {
     }
     
     const monthsToForecast = Math.min(months, loan.remainingTerms);
-    const monthlyPayment = loan.monthlyPayment;
+    // 对于浮动月供贷款，我们需要动态计算每月的月供
+    const isFloatingPayment = loan.floatingPayment?.enabled;
     
     const forecast = [];
     let remainingBalance = loan.remainingBalance;
     let remainingTerms = loan.remainingTerms;
     
     for (let month = 1; month <= monthsToForecast; month++) {
+      // 计算当前月份的月供（考虑浮动月供）
+      const currentDate = new Date();
+      currentDate.setMonth(currentDate.getMonth() + month - 1);
+      const monthlyPayment = isFloatingPayment ? 
+        this.calculateLoanMonthlyPayment(loan, currentDate) : 
+        loan.monthlyPayment;
+        
       // 简化计算：假设每月还款等额本息
       const principalPayment = remainingBalance > monthlyPayment ? 
         Math.min(monthlyPayment, remainingBalance) : remainingBalance;
